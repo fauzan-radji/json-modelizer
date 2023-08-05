@@ -30,11 +30,8 @@ Here's a quick example of how to use "json-modelizer" to create and query a JSON
 const { Model, Field } = require("json-modelizer");
 
 class User extends Model {
-  static schema = {
-    username: Field.String().isRequired(),
-    email: Field.String().isRequired(),
-    age: Field.Number(),
-  };
+  static _table = "users";
+  static _fields = ["username", "email", "age"];
 }
 
 // Create a new user
@@ -44,8 +41,8 @@ const newUser = User.create({
   age: 30,
 });
 
-// Find all users aged 30 or above
-const usersAbove30 = User.where({ age: { $gte: 30 } });
+// Get all users
+const users = User.all();
 ```
 
 ## Contributions
