@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Lightweight and intuitive Object-Relational Mapping (ORM) package designed to work with JSON files as a data storage solution.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
