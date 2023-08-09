@@ -1,42 +1,27 @@
-import Relation from "./Relation.js";
 import { data } from "./utils.js";
 
 export default class Model {
   static _table;
-  static _fields = [];
   static _relations = [];
+  static schema = {};
   #table;
 
   /**
    * @param {Object} obj
    * @param {number} obj.id
-   * @param {number} obj._id
    * @returns {Model}
    */
   constructor(obj) {
     this.#table = this.constructor._table;
-    this._id = obj.id || obj._id || 0;
+    Object.defineProperty(this, "id", {
+      value: obj.id || 0,
+      enumerable: true,
+      writable: false,
+      configurable: false,
+    });
 
-    const filteredObj = this.constructor.filtered(obj);
-    for (const [key, value] of Object.entries(filteredObj)) this[key] = value;
-
-    for (const relation of this.constructor._relations) {
-      Object.defineProperty(this, relation.table, {
-        get() {
-          const { model, type, foreignKey, localKey } = relation;
-          switch (type) {
-            case Relation.HAS_ONE:
-              return model.findBy(foreignKey, this[localKey]);
-
-            case Relation.HAS_MANY:
-              return model.where(foreignKey, this[localKey]);
-
-            case Relation.BELONGS_TO:
-              return model.findBy(foreignKey, this[localKey]);
-          }
-        },
-        enumerable: true,
-      });
+    for (const [key, field] of Object.entries(this.constructor.sanitize(obj))) {
+      this[key] = field;
     }
   }
 
@@ -51,16 +36,13 @@ export default class Model {
 
   #refresh() {
     const model = this.constructor.find(this.id);
-    if (model) {
+    if (model)
       for (const [key, value] of Object.entries(model)) {
+        if (key === "id") continue;
         this[key] = value;
       }
-    }
-    return this;
-  }
 
-  get id() {
-    return this._id;
+    return this;
   }
 
   get table() {
@@ -71,35 +53,12 @@ export default class Model {
     return this._table;
   }
 
-  get filtered() {
-    const obj = {};
-    obj.id = this.id;
-    for (const key of this.constructor._fields) {
-      obj[key] = this[key];
-    }
-    for (const relation of this.constructor._relations) {
-      obj[relation.localKey] = this[relation.localKey];
-    }
-    return obj;
-  }
-
-  static filtered(obj) {
-    const newObj = {};
-
-    for (const field of this._fields) newObj[field] = obj[field];
-    for (const relation of this._relations) {
-      if (relation.type !== Relation.BELONGS_TO) continue;
-      newObj[relation.localKey] = obj[relation.localKey];
-    }
-
-    return newObj;
-  }
-
   static _save(models) {
-    data(
-      this.table,
-      models.map((model) => model.filtered)
-    );
+    data(this.table, models);
+  }
+
+  static count() {
+    return this.all().length;
   }
 
   /**
@@ -150,7 +109,7 @@ export default class Model {
    * Contact.find(999); // => null
    */
   static find(id) {
-    return this.findBy("_id", id);
+    return this.findBy("id", id);
   }
 
   /**
@@ -240,5 +199,20 @@ export default class Model {
     const models = this.all();
     this._save([]);
     return models;
+  }
+
+  static sanitize(obj) {
+    const newObj = {};
+    for (const [key, field] of Object.entries(this.schema)) {
+      try {
+        const validated = field.validateAndSanitize(obj[key]);
+        if (!validated) continue;
+        newObj[key] = validated;
+      } catch (e) {
+        throw new Error(`${key}: ${e.message}`);
+      }
+    }
+
+    return newObj;
   }
 }
