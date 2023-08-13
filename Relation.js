@@ -1,41 +1,41 @@
 export default class Relation {
-  constructor(userModel, type, model, localKey, foreignKey) {
-    this.model = model;
+  constructor(src, dest, type, key) {
+    this.src = src;
+    this.dest = dest;
     this.type = type;
-    this.table = model.table;
-    this.localKey = localKey;
-    this.foreignKey = foreignKey;
+    this.key = key;
+  }
 
-    if (!this.localKey) {
-      if (type === Relation.HAS_ONE || type === Relation.HAS_MANY) {
-        this.localKey = "id";
-      } else {
-        this.localKey = `${model.table}_id`;
-      }
-    }
+  // Relation.hasOne(User, Post, "userId");
 
-    if (!this.foreignKey) {
-      if (type === Relation.HAS_ONE || type === Relation.HAS_MANY) {
-        this.foreignKey = `${userModel.table}_id`;
-      } else {
-        this.foreignKey = "id";
-      }
-    }
+  static hasOne(src, dest, key) {
+    if (!key) key = src.table + "Id";
 
-    if (type !== Relation.BELONGS_TO) {
-      model._relations.push(
-        new Relation(
-          model,
-          Relation.BELONGS_TO,
-          userModel,
-          foreignKey,
-          localKey
-        )
-      );
+    return new Relation(src, dest, Relation.#HAS_ONE, key);
+  }
+
+  static belongsTo(src, dest, key) {
+    if (!key) key = dest.table + "Id";
+
+    return new Relation(src, dest, Relation.#BELONGS_TO, key);
+  }
+
+  getRelatedModel() {
+    const model = this.src;
+    const relatedModel = this.dest;
+
+    switch (this.type) {
+      case Relation.#HAS_ONE:
+        return relatedModel.find({ [this.key]: model.id });
+
+      case Relation.#BELONGS_TO:
+        return relatedModel.find(model[this.key]);
+
+      default:
+        throw new Error("Invalid relation type");
     }
   }
 
-  static HAS_ONE = "hasOne";
-  static HAS_MANY = "hasMany";
-  static BELONGS_TO = "belongsTo";
+  static #HAS_ONE = "hasOne";
+  static #BELONGS_TO = "belongsTo";
 }

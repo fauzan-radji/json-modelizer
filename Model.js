@@ -1,3 +1,4 @@
+import Relation from "./Relation.js";
 import { data } from "./utils.js";
 
 export default class Model {
@@ -22,6 +23,14 @@ export default class Model {
 
     for (const [key, field] of Object.entries(this.constructor.sanitize(obj))) {
       this[key] = field;
+    }
+
+    for (const relation of this.constructor._relations) {
+      Object.defineProperty(this, relation.dest.table, {
+        get: () => relation.getRelatedModel(),
+        enumerable: true,
+        configurable: false,
+      });
     }
   }
 
@@ -214,5 +223,23 @@ export default class Model {
     }
 
     return newObj;
+  }
+
+  /**
+   * @param {Model} model
+   * @param {string} foreignKey
+   * @returns {void}
+   */
+  static hasOne(model, foreignKey) {
+    this._relations.push(Relation.hasOne(this, model, foreignKey));
+  }
+
+  /**
+   * @param {Model} model
+   * @param {string} foreignKey
+   * @returns {void}
+   */
+  static belongsTo(model, foreignKey) {
+    this._relations.push(Relation.belongsTo(this, model, foreignKey));
   }
 }
