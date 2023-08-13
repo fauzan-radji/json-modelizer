@@ -2,6 +2,17 @@
 
 JSON-Modelizer is a lightweight and intuitive Object-Relational Mapping (ORM) package designed to work with JSON files as a data storage solution. It simplifies the process of creating, managing, and querying structured data models from JSON files, providing a seamless integration between your Node.js application and JSON-based data storage.
 
+## Table of Contents
+
+- [JSON-Modelizer](#json-modelizer)
+  - [Table of Contents](#table-of-contents)
+  - [Key Features](#key-features)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Examples](#examples)
+  - [Contributions](#contributions)
+  - [License](#license)
+
 ## Key Features
 
 - **JSON Data Mapping**: Define data models using JavaScript classes, and effortlessly map them to JSON files for data storage.

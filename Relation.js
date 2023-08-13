@@ -41,6 +41,13 @@ export default class Relation {
     return new Relation(name, src, dest, Relation.#HAS_ONE, key);
   }
 
+  static hasMany(src, dest) {
+    const name = dest.table;
+    const key = `${src.table}Id`;
+
+    return new Relation(name, src, dest, Relation.#HAS_MANY, key);
+  }
+
   static belongsTo(src, dest) {
     const name = dest.table;
     const key = `${dest.table}Id`;
@@ -58,11 +65,15 @@ export default class Relation {
       case Relation.#BELONGS_TO:
         return relatedModel.find(model[this.key]);
 
+      case Relation.#HAS_MANY:
+        return relatedModel.where(this.key, model.id);
+
       default:
         throw new Error("Invalid relation type");
     }
   }
 
   static #HAS_ONE = "hasOne";
+  static #HAS_MANY = "hasMany";
   static #BELONGS_TO = "belongsTo";
 }

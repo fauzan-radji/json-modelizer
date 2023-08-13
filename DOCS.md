@@ -2,16 +2,21 @@
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Model](#model)
-    - [Definition](#definition)
-    - [Methods](#methods)
-    - [Instance](#instance)
+- [Documentation](#documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Model](#model)
+      - [Model Definition](#model-definition)
+      - [Methods](#methods)
+      - [Instance](#instance)
+        - [Methods](#methods-1)
+        - [Properties](#properties)
     - [Relationships](#relationships)
-      - [Has One](#has-one)
-      - [Has Many](#has-many)
-      - [Belongs To](#belongs-to)
+      - [Definition](#definition)
+      - [Methods](#methods-2)
+      - [One to One](#one-to-one)
+      - [One to Many](#one-to-many)
 
 ## Installation
 
@@ -28,11 +33,17 @@ The `Model` class is the main class of the ORM (Object-Relational Mapping) libra
 #### Model Definition
 
 ```javascript
-import { Model } from "json-modelizer";
+import { Field, Model } from "json-modelizer";
 
 class User extends Model {
   static _table = "users";
-  static _fields = ["name", "email"];
+  static schema = {
+    name: Field.String().Required(),
+    age: Field.Number(),
+    createdAt: Field.Date()
+      .Default(() => new Date())
+      .Required(),
+  };
 }
 ```
 
@@ -181,91 +192,205 @@ class User extends Model {
 
 #### Instance
 
-<!-- TODO -->
+A model instance represents a single record of the model. It provides various methods to interact with the record.
 
-#### Relationships
+##### Methods
 
-Relations can be defined on a model definition via the `_relations` static property. The `_relations` property is an array of `Relation` objects, which can be imported from the `json-modelizer` package.
+1. `Model#update(obj) => Model`:
+
+   - Description: Update the record with the provided data in the JSON data.
+   - Parameters:
+     - `obj` (Object): An object representing the data to update for the record.
+   - Returns: A Model instance representing the updated record.
+
+   ```javascript
+   const user = User.find(1);
+   const updatedUser = user.update({ name: "Jane Doe" });
+   console.log(updatedUser.name); // Jane Doe
+   console.log(updatedUser.email); // john@doe
+   console.log(updatedUser.id); // 1
+   ```
+
+2. `Model#delete() => Model`:
+
+   - Description: Delete the record from the JSON data.
+   - Returns: A Model instance representing the deleted record.
+
+   ```javascript
+   const user = User.find(1);
+   const deletedUser = user.delete();
+   console.log(deletedUser.name); // John Doe
+   console.log(deletedUser.email); // john@doe
+   console.log(deletedUser.id); // 1
+   ```
+
+##### Properties
+
+1. `Model#id` (getter => number): The ID of the record.
+
+   ```javascript
+   const user = User.find(1);
+   console.log(user.id); // 1
+   ```
+
+2. `Model#table` (getter => string): The table name of the model.
+
+   ```javascript
+   const user = User.find(1);
+   console.log(user.table); // users
+   ```
+
+<!-- TODO: createdAt and updatedAt -->
+
+### Relationships
+
+The `Model` class provides various methods to define relationships between models. The following types of relationships are supported:
+
+- One-to-One
+- One-to-Many
+
+#### Definition
+
+Relationships are defined on the model class using one of the `hasOne`, `hasMany`, `belongsTo` methods. For example, to define a `hasOne` relationship between a `User` model and a `Contact` model:
 
 ```javascript
-import { Model, Relation } from "json-modelizer";
-
-class Post extends Model {
-  static _table = "posts";
-  static _fields = ["title", "body"];
-}
+import { Field, Model } from "json-modelizer";
 
 class User extends Model {
   static _table = "users";
-  static _fields = ["name", "email"];
-  static _relations = [new Relation(this, Relation.HAS_MANY, Post)];
+  static schema = {
+    name: Field.String().Required(),
+    age: Field.Number(),
+    createdAt: Field.Date()
+      .Default(() => new Date())
+      .Required(),
+  };
 }
+
+class Contact extends Model {
+  static _table = "contacts";
+  static schema = {
+    phone: Field.String().Required(),
+    email: Field.String().Required(),
+  };
+}
+
+User.hasOne(Contact);
+Contact.belongsTo(User);
 ```
 
-The `Relation` constructor takes 4 arguments:
+The `hasOne`, `hasMany`, and `belongsTo` methods takes only one parameter, which is the related model class. Each of these methods returns a `Relationship` instance, which can be used to define additional properties for the relationship (see [Relationships > Methods](#methods-2)). The `hasOne` and `hasMany` methods are used to define the relationship from the model that owns the foreign key, while the `belongsTo` method is used to define the relationship from the model that contains the foreign key.
 
-1. `model` (Model): The model class that the relation is defined on.
-2. `type` (string): The type of relation. Can be one of `Relation.HAS_MANY` or `Relation.HAS_ONE`.
-3. `relatedModel` (Model): The model class that the relation is defined on.
+#### Methods
 
-Note that `Post` model does not have any relations defined on it. This is because the relation is defined on the `User` model as a `hasMany` relation to `Post` and automatically creates a `belongsTo` relation on the `Post` model to `User`.
+The relation object is an instance of the `Relation` class, which provides various methods to define the relationship.
 
-The field name for the relation is automatically generated by the model table name + `id`. In this case, the field name is `users_id`. To access the `User` model from the `Post` model, the `users` field is used instead of `user` because the table name of the `User` model is `users` and vice versa.
+1. `Relation#as(name) => Relation`:
 
-##### Has One
+   - Description: Define the name of the relationship. If not defined, the name of the relationship will be the name of the related model's table. For belongs-to relationships, the name of the relationship will be the name of the related model's table with the suffix `Id`, this can be overridden by the `foreignKey` method.
+   - Parameters:
+     - `name` (string): The name of the relationship.
+   - Returns: The Relation instance.
 
-A `hasOne` relation is defined on the model class as follows:
+   ```javascript
+   console.log(Contact._table); // contacts
+
+   User.hasOne(Contact);
+   // The name of the relationship will be "contacts"
+
+   User.hasOne(Contact).as("contact");
+   // The name of the relationship will be "contact"
+   ```
+
+2. `Relation#foreignKey(key) => Relation`:
+
+   - Description: Define the foreign key of the relationship. If not defined, the foreign key of the relationship will be the name of the related model's table with the suffix `Id`. If the `as` method is used after the `foreignKey` method and the type of the relationship is `belongsTo`, the name of the relationship will be overridden by the name provided to the `as` method. Please make sure to call the `foreignKey` method after the `as` method.
+   - Parameters:
+     - `key` (string): The foreign key of the relationship.
+   - Returns: The Relation instance.
+
+   ```javascript
+   console.log(Contact._table); // contacts
+
+   User.hasOne(Contact);
+   // The foreign key of the relationship will be "contactsId"
+
+   User.hasOne(Contact).foreignKey("contactId");
+   // The foreign key of the relationship will be "contactId"
+
+   console.log(User._table); // users
+   Contact.belongsTo(User);
+   // The foreign key of the relationship will be "usersId"
+
+   Contact.belongsTo(User).as("user");
+   // The foreign key of the relationship will be "userId"
+
+   Contact.belongsTo(User).foreignKey("userId");
+   // The foreign key of the relationship will be "userId"
+
+   Contact.belongsTo(User).foreignKey("userId").as("owner");
+   // The foreign key of the relationship will be "ownerId"
+
+   Contact.belongsTo(User).as("owner").foreignKey("userId");
+   // The foreign key of the relationship will be "userId"
+   ```
+
+#### One to One
+
+A One-to-One relationship is defined on the model class as follows:
 
 ```javascript
-import { Model, Relation } from "json-modelizer";
-
-class Post extends Model {
-  static _table = "posts";
-  static _fields = ["title", "body"];
-}
+import { Model, Field } from "json-modelizer";
 
 class User extends Model {
   static _table = "users";
-  static _fields = ["name", "email"];
-  static _relations = [new Relation(this, Relation.HAS_ONE, Post)];
+  static schema = {
+    name: Field.String().Required(),
+    age: Field.Number(),
+    createdAt: Field.Date()
+      .Default(() => new Date())
+      .Required(),
+  };
 }
 
-const user = User.first();
-console.log(user.posts); // { title: "My First Post", body: "..." }
+class Contact extends Model {
+  static _table = "contacts";
+  static schema = {
+    phone: Field.String().Required(),
+    email: Field.String().Required(),
+  };
+}
 
-const post = Post.first();
-console.log(post.users); // { name: "John Doe", email: "john@doe" }
+User.hasOne(Contact);
+Contact.belongsTo(User);
 ```
 
-The `Post` model will automatically have a `belongsTo` relation to `User` defined on it.
+#### One to Many
 
-##### Has Many
-
-A `hasMany` relation is defined on the model class as follows:
+A One-to-Many relationship is defined on the model class as follows:
 
 ```javascript
-import { Model, Relation } from "json-modelizer";
+import { Model, Field } from "json-modelizer";
+
+class User extends Model {
+  static _table = "users";
+  static schema = {
+    name: Field.String().Required(),
+    age: Field.Number(),
+    createdAt: Field.Date()
+      .Default(() => new Date())
+      .Required(),
+  };
+}
 
 class Post extends Model {
   static _table = "posts";
-  static _fields = ["title", "body"];
+  static schema = {
+    title: Field.String().Required(),
+    content: Field.String().Required(),
+  };
 }
 
-class User extends Model {
-  static _relations = [new Relation(this, Relation.HAS_MANY, Post)];
-}
+User.hasMany(Post);
+Post.belongsTo(User);
 ```
-
-The `Post` model will automatically have a `belongsTo` relation to `User` defined on it.
-
-##### Belongs To
-
-A `belongsTo` relation is automatically created when a `hasOne` or `hasMany` relation is defined on a model class.
-
-##### Belongs To Many
-
-<!-- TODO -->
-
-##### Has Many Through
-
-<!-- TODO -->

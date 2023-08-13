@@ -248,6 +248,19 @@ export default class Model {
     return relation;
   }
 
+  // hasMany
+  /**
+   * @param {Model} model
+   * @returns {void}
+   */
+  static hasMany(model) {
+    this._relations = this._relations.slice();
+    const relation = Relation.hasMany(this, model);
+    this._relations.push(relation);
+
+    return relation;
+  }
+
   /**
    * @param {Model} model
    * @returns {void}
