@@ -29,7 +29,7 @@ function getDataPath() {
   return dataPath.endsWith("/") ? dataPath : `${dataPath}/`;
 }
 
-export function data(name, data) {
+export function data(name, data, replacer = null, space = 2) {
   const { prettyfy } = readConfig();
   const dataPath = getDataPath();
   const filePath = `${dataPath}${name}.json`;
@@ -43,7 +43,7 @@ export function data(name, data) {
 
   if (data) {
     const json = prettyfy
-      ? JSON.stringify(data, null, 2)
+      ? JSON.stringify(data, replacer, space)
       : JSON.stringify(data);
     writeFileSync(filePath, json);
     return data;

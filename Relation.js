@@ -1,32 +1,59 @@
 export default class Relation {
-  constructor(src, dest, type, key) {
+  #name;
+
+  constructor(name, src, dest, type, key) {
+    this.key = key;
+    this.name = name;
     this.src = src;
     this.dest = dest;
     this.type = type;
+  }
+
+  as(name) {
+    this.name = name;
+    return this;
+  }
+
+  foreignKey(key) {
     this.key = key;
+    return this;
   }
 
-  // Relation.hasOne(User, Post, "userId");
+  set name(value) {
+    if (typeof value !== "string")
+      throw new Error("Relation name must be a string");
 
-  static hasOne(src, dest, key) {
-    if (!key) key = src.table + "Id";
+    this.#name = value;
 
-    return new Relation(src, dest, Relation.#HAS_ONE, key);
+    if (this.type === Relation.#BELONGS_TO) {
+      this.key = `${value}Id`;
+    }
   }
 
-  static belongsTo(src, dest, key) {
-    if (!key) key = dest.table + "Id";
-
-    return new Relation(src, dest, Relation.#BELONGS_TO, key);
+  get name() {
+    return this.#name;
   }
 
-  getRelatedModel() {
-    const model = this.src;
+  static hasOne(src, dest) {
+    const name = dest.table;
+    const key = `${src.table}Id`;
+
+    return new Relation(name, src, dest, Relation.#HAS_ONE, key);
+  }
+
+  static belongsTo(src, dest) {
+    const name = dest.table;
+    const key = `${dest.table}Id`;
+
+    return new Relation(name, src, dest, Relation.#BELONGS_TO, key);
+  }
+
+  getRelatedModel(model) {
     const relatedModel = this.dest;
 
     switch (this.type) {
       case Relation.#HAS_ONE:
-        return relatedModel.find({ [this.key]: model.id });
+        return relatedModel.findBy(this.key, model.id);
 
       case Relation.#BELONGS_TO:
         return relatedModel.find(model[this.key]);

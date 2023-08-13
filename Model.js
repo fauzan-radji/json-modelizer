@@ -26,10 +26,13 @@ export default class Model {
     }
 
     for (const relation of this.constructor._relations) {
-      Object.defineProperty(this, relation.dest.table, {
-        get: () => relation.getRelatedModel(),
+      if (relation.key in obj) {
+        this[relation.key] = obj[relation.key];
+      }
+
+      Object.defineProperty(this, relation.name, {
+        get: () => relation.getRelatedModel(this),
         enumerable: true,
-        configurable: false,
       });
     }
   }
@@ -63,7 +66,12 @@ export default class Model {
   }
 
   static _save(models) {
-    data(this.table, models);
+    const relationNames = this._relations.map((relation) => relation.name);
+    data(this.table, models, (key, value) => {
+      if (relationNames.includes(key)) return undefined;
+
+      return value;
+    });
   }
 
   static count() {
@@ -101,6 +109,9 @@ export default class Model {
    * @param {string} key
    * @param {*} value
    * @returns {Model | null}
+   * @example
+   * Contact.findBy("chatId", 1234567890); // => Contact
+   * Contact.findBy("chatId", 999); // => null
    */
   static findBy(key, value) {
     const models = this.all();
@@ -227,19 +238,25 @@ export default class Model {
 
   /**
    * @param {Model} model
-   * @param {string} foreignKey
    * @returns {void}
    */
-  static hasOne(model, foreignKey) {
-    this._relations.push(Relation.hasOne(this, model, foreignKey));
+  static hasOne(model) {
+    this._relations = this._relations.slice();
+    const relation = Relation.hasOne(this, model);
+    this._relations.push(relation);
+
+    return relation;
   }
 
   /**
    * @param {Model} model
-   * @param {string} foreignKey
    * @returns {void}
    */
-  static belongsTo(model, foreignKey) {
-    this._relations.push(Relation.belongsTo(this, model, foreignKey));
+  static belongsTo(model) {
+    this._relations = this._relations.slice();
+    const relation = Relation.belongsTo(this, model);
+    this._relations.push(relation);
+
+    return relation;
   }
 }
