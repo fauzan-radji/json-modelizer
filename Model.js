@@ -1,3 +1,4 @@
+import Relation from "./Relation.js";
 import { data } from "./utils.js";
 
 export default class Model {
@@ -22,6 +23,17 @@ export default class Model {
 
     for (const [key, field] of Object.entries(this.constructor.sanitize(obj))) {
       this[key] = field;
+    }
+
+    for (const relation of this.constructor._relations) {
+      if (relation.key in obj) {
+        this[relation.key] = obj[relation.key];
+      }
+
+      Object.defineProperty(this, relation.name, {
+        get: () => relation.getRelatedModel(this),
+        enumerable: true,
+      });
     }
   }
 
@@ -54,7 +66,12 @@ export default class Model {
   }
 
   static _save(models) {
-    data(this.table, models);
+    const relationNames = this._relations.map((relation) => relation.name);
+    data(this.table, models, (key, value) => {
+      if (relationNames.includes(key)) return undefined;
+
+      return value;
+    });
   }
 
   static count() {
@@ -92,6 +109,9 @@ export default class Model {
    * @param {string} key
    * @param {*} value
    * @returns {Model | null}
+   * @example
+   * Contact.findBy("chatId", 1234567890); // => Contact
+   * Contact.findBy("chatId", 999); // => null
    */
   static findBy(key, value) {
     const models = this.all();
@@ -214,5 +234,50 @@ export default class Model {
     }
 
     return newObj;
+  }
+
+  /**
+   * @param {Model} model
+   * @returns {void}
+   */
+  static hasOne(model) {
+    this._relations = this._relations.slice();
+    const relation = Relation.hasOne(this, model);
+    this._relations.push(relation);
+
+    return relation;
+  }
+
+  // hasMany
+  /**
+   * @param {Model} model
+   * @returns {void}
+   */
+  static hasMany(model) {
+    this._relations = this._relations.slice();
+    const relation = Relation.hasMany(this, model);
+    this._relations.push(relation);
+
+    return relation;
+  }
+
+  /**
+   * @param {Model} model
+   * @returns {void}
+   */
+  static belongsTo(model) {
+    this._relations = this._relations.slice();
+    const relation = Relation.belongsTo(this, model);
+    this._relations.push(relation);
+
+    return relation;
+  }
+
+  static belongsToMany(model) {
+    this._relations = this._relations.slice();
+    const relation = Relation.belongsToMany(this, model);
+    this._relations.push(relation);
+
+    return relation;
   }
 }
