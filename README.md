@@ -42,7 +42,11 @@ const { Model, Field } = require("json-modelizer");
 
 class User extends Model {
   static _table = "users";
-  static _fields = ["username", "email", "age"];
+  static schema = {
+    username: Field.String().Required(),
+    email: Field.String().Required(),
+    age: Field.Number().Required(),
+  };
 }
 
 // Create a new user
