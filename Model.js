@@ -272,4 +272,12 @@ export default class Model {
 
     return relation;
   }
+
+  static belongsToMany(model) {
+    this._relations = this._relations.slice();
+    const relation = Relation.belongsToMany(this, model);
+    this._relations.push(relation);
+
+    return relation;
+  }
 }

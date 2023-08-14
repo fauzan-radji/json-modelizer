@@ -19,6 +19,33 @@ export default class Relation {
     return this;
   }
 
+  getRelatedModel(model) {
+    const relatedModel = this.dest;
+
+    switch (this.type) {
+      case Relation.#HAS_ONE:
+        return relatedModel.findBy(this.key, model.id);
+
+      case Relation.#HAS_MANY:
+        return relatedModel.filter((related) => {
+          return related[this.key] instanceof Array
+            ? related[this.key].includes(model.id)
+            : model.id === related[this.key];
+        });
+
+      case Relation.#BELONGS_TO:
+        return relatedModel.find(model[this.key]);
+
+      case Relation.#BELONGS_TO_MANY:
+        return relatedModel.filter((related) => {
+          return model[this.key].includes(related.id);
+        });
+
+      default:
+        throw new Error("Invalid relation type");
+    }
+  }
+
   set name(value) {
     if (typeof value !== "string")
       throw new Error("Relation name must be a string");
@@ -55,25 +82,15 @@ export default class Relation {
     return new Relation(name, src, dest, Relation.#BELONGS_TO, key);
   }
 
-  getRelatedModel(model) {
-    const relatedModel = this.dest;
+  static belongsToMany(src, dest) {
+    const name = dest.table;
+    const key = `${dest.table}Ids`;
 
-    switch (this.type) {
-      case Relation.#HAS_ONE:
-        return relatedModel.findBy(this.key, model.id);
-
-      case Relation.#BELONGS_TO:
-        return relatedModel.find(model[this.key]);
-
-      case Relation.#HAS_MANY:
-        return relatedModel.where(this.key, model.id);
-
-      default:
-        throw new Error("Invalid relation type");
-    }
+    return new Relation(name, src, dest, Relation.#BELONGS_TO_MANY, key);
   }
 
   static #HAS_ONE = "hasOne";
   static #HAS_MANY = "hasMany";
   static #BELONGS_TO = "belongsTo";
+  static #BELONGS_TO_MANY = "belongsToMany";
 }
