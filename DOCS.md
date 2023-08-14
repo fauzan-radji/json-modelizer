@@ -17,6 +17,7 @@
       - [Methods](#methods-2)
       - [One to One](#one-to-one)
       - [One to Many](#one-to-many)
+      - [Many to Many](#many-to-many)
 
 ## Installation
 
@@ -248,10 +249,11 @@ The `Model` class provides various methods to define relationships between model
 
 - One-to-One
 - One-to-Many
+- Many-to-Many
 
 #### Definition
 
-Relationships are defined on the model class using one of the `hasOne`, `hasMany`, `belongsTo` methods. For example, to define a `hasOne` relationship between a `User` model and a `Contact` model:
+Relationships are defined on the model class using one of the `hasOne`, `hasMany`, `belongsTo`, `belongsToMany` methods. For example, to define a `hasOne` relationship between a `User` model and a `Contact` model:
 
 ```javascript
 import { Field, Model } from "json-modelizer";
@@ -279,7 +281,7 @@ User.hasOne(Contact);
 Contact.belongsTo(User);
 ```
 
-The `hasOne`, `hasMany`, and `belongsTo` methods takes only one parameter, which is the related model class. Each of these methods returns a `Relationship` instance, which can be used to define additional properties for the relationship (see [Relationships > Methods](#methods-2)). The `hasOne` and `hasMany` methods are used to define the relationship from the model that owns the foreign key, while the `belongsTo` method is used to define the relationship from the model that contains the foreign key.
+The `hasOne`, `hasMany`, `belongsTo`, and `belongsToMany` methods takes only one parameter, which is the related model class. Each of these methods returns a `Relationship` instance, which can be used to define additional properties for the relationship (see [Relationships > Methods](#methods-2)). The `hasOne` and `hasMany` methods are used to define the relationship from the model that owns the foreign key, while the `belongsTo` and `belongsToMany` methods are used to define the relationship from the model that contains the foreign key.
 
 #### Methods
 
@@ -393,4 +395,33 @@ class Post extends Model {
 
 User.hasMany(Post);
 Post.belongsTo(User);
+```
+
+#### Many to Many
+
+A Many-to-Many relationship is defined on the model class as follows:
+
+```javascript
+import { Model, Field } from "json-modelizer";
+
+class User extends Model {
+  static _table = "users";
+  static schema = {
+    name: Field.String().Required(),
+    age: Field.Number(),
+    createdAt: Field.Date()
+      .Default(() => new Date())
+      .Required(),
+  };
+}
+
+class Role extends Model {
+  static _table = "roles";
+  static schema = {
+    name: Field.String().Required(),
+  };
+}
+
+User.hasMany(Role);
+Role.belongsToMany(User);
 ```
