@@ -26,13 +26,13 @@ export default class Field {
   }
 
   validateAndSanitize(value) {
-    const shouldCheckDefaultValue = this.isRequired && value === undefined;
+    const shouldCheckDefaultValue = this.#isRequired && value === undefined;
     if (shouldCheckDefaultValue) {
-      const doesntHaveDefaultValue = this.default === undefined;
+      const doesntHaveDefaultValue = this.#default === undefined;
       if (doesntHaveDefaultValue) throw new Error("This field is required");
 
       value =
-        typeof this.default === "function" ? this.default() : this.default;
+        typeof this.#default === "function" ? this.#default() : this.#default;
     }
 
     const isUndefinedOrNull = value === undefined || value === null;
@@ -40,7 +40,7 @@ export default class Field {
       return value;
     }
 
-    switch (this.type) {
+    switch (this.#type) {
       case Field.#NUMBER:
         if (typeof value !== "number" && isNaN(+value))
           throw new Error(`This field must be a number (got ${typeof value})`);
@@ -62,20 +62,8 @@ export default class Field {
         return new Date(value);
 
       default:
-        throw new Error(`Unknown field type: ${this.type}`);
+        throw new Error(`Unknown field type: ${this.#type}`);
     }
-  }
-
-  get type() {
-    return this.#type;
-  }
-
-  get isRequired() {
-    return this.#isRequired;
-  }
-
-  get default() {
-    return this.#default;
   }
 
   static Number() {

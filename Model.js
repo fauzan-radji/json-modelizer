@@ -21,6 +21,20 @@ export default class Model {
       configurable: false,
     });
 
+    Object.defineProperty(this, "createdAt", {
+      value: new Date(obj.createdAt) || new Date(),
+      enumerable: true,
+      writable: false,
+      configurable: false,
+    });
+
+    Object.defineProperty(this, "updatedAt", {
+      value: new Date(obj.updatedAt) || new Date(),
+      enumerable: true,
+      writable: false,
+      configurable: false,
+    });
+
     for (const [key, field] of Object.entries(this.constructor.sanitize(obj))) {
       this[key] = field;
     }
@@ -50,7 +64,7 @@ export default class Model {
     const model = this.constructor.find(this.id);
     if (model)
       for (const [key, value] of Object.entries(model)) {
-        if (key === "id") continue;
+        if (["id", "createdAt", "updatedAt"].includes(key)) continue;
         this[key] = value;
       }
 
@@ -96,6 +110,8 @@ export default class Model {
     const models = this.all();
     const lastId = Math.max(0, ...models.map((model) => model.id));
     obj.id = lastId + 1;
+    obj.createdAt = new Date();
+    obj.updatedAt = new Date();
 
     const model = new this(obj);
     models.push(model);
@@ -173,7 +189,7 @@ export default class Model {
     if (index === -1) return null;
 
     const model = models[index];
-    models[index] = new this({ ...model, ...obj });
+    models[index] = new this({ ...model, ...obj, updatedAt: new Date() });
     this._save(models);
 
     return model;

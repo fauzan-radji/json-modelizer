@@ -12,9 +12,11 @@
       - [Instance](#instance)
         - [Methods](#methods-1)
         - [Properties](#properties)
+    - [Fields](#fields)
+      - [Methods](#methods-2)
     - [Relationships](#relationships)
       - [Definition](#definition)
-      - [Methods](#methods-2)
+      - [Methods](#methods-3)
       - [One to One](#one-to-one)
       - [One to Many](#one-to-many)
       - [Many to Many](#many-to-many)
@@ -41,9 +43,6 @@ class User extends Model {
   static schema = {
     name: Field.String().Required(),
     age: Field.Number(),
-    createdAt: Field.Date()
-      .Default(() => new Date())
-      .Required(),
   };
 }
 ```
@@ -241,7 +240,163 @@ A model instance represents a single record of the model. It provides various me
    console.log(user.table); // users
    ```
 
-<!-- TODO: createdAt and updatedAt -->
+3. `Model#createdAt` (getter => Date): The date the record was created.
+
+   ```javascript
+   const user = User.find(1);
+   console.log(user.createdAt); // 2021-01-01T00:00:00.000Z
+   ```
+
+4. `Model#updatedAt` (getter => Date): The date the record was last updated.
+
+   ```javascript
+   const user = User.find(1);
+   console.log(user.updatedAt); // 2021-01-01T00:00:00.000Z
+   ```
+
+### Fields
+
+The `Field` class provides various methods to define attributes for a model. The following types of attributes are supported:
+
+- Number
+- String
+- Text
+- Boolean
+- Date
+
+```javascript
+import { Field, Model } from "json-modelizer";
+
+class User extends Model {
+  static _table = "users";
+  static schema = {
+    name: Field.String().Required(),
+    age: Field.Number(),
+  };
+}
+```
+
+The `Field` class provides the following methods to define attributes:
+
+1. `Field.Number() => Field`:
+
+   - Description: Define a number attribute.
+   - Returns: A Field instance representing the number attribute.
+
+   ```javascript
+   import { Field, Model } from "json-modelizer";
+
+   class User extends Model {
+     static _table = "users";
+     static schema = {
+       age: Field.Number(),
+     };
+   }
+   ```
+
+2. `Field.String() => Field`:
+
+   - Description: Define a string attribute.
+   - Returns: A Field instance representing the string attribute.
+
+   ```javascript
+   import { Field, Model } from "json-modelizer";
+
+   class User extends Model {
+     static _table = "users";
+     static schema = {
+       name: Field.String(),
+     };
+   }
+   ```
+
+3. `Field.Text() => Field`:
+
+   - Description: Define a text attribute.
+   - Returns: A Field instance representing the text attribute.
+
+   ```javascript
+   import { Field, Model } from "json-modelizer";
+
+   class User extends Model {
+     static _table = "users";
+     static schema = {
+       bio: Field.Text(),
+     };
+   }
+   ```
+
+4. `Field.Boolean() => Field`:
+
+   - Description: Define a boolean attribute.
+   - Returns: A Field instance representing the boolean attribute.
+
+   ```javascript
+   import { Field, Model } from "json-modelizer";
+
+   class User extends Model {
+     static _table = "users";
+     static schema = {
+       isVerified: Field.Boolean(),
+     };
+   }
+   ```
+
+5. `Field.Date() => Field`:
+
+   - Description: Define a date attribute.
+   - Returns: A Field instance representing the date attribute.
+
+   ```javascript
+   import { Field, Model } from "json-modelizer";
+
+   class User extends Model {
+     static _table = "users";
+     static schema = {
+       birthday: Field.Date(),
+     };
+   }
+   ```
+
+Each of the above methods returns a `Field` instance, which can be used to define additional properties for the attribute (see [Fields > Methods](#methods)).
+
+#### Methods
+
+The field object is an instance of the `Field` class, which provides various methods to define the attribute.
+
+1. `Field#Required() => Field`:
+
+   - Description: Define the attribute as required.
+   - Returns: The Field instance.
+
+   ```javascript
+   import { Field, Model } from "json-modelizer";
+
+   class User extends Model {
+     static _table = "users";
+     static schema = {
+       name: Field.String().Required(),
+     };
+   }
+   ```
+
+2. `Field#Default(value) => Field`:
+
+   - Description: Define the default value for the attribute.
+   - Parameters:
+     - `value` (any): The default value for the attribute. This can be a value or a function that returns a value. Make sure the value or the return value of the function matches the type of the attribute.
+   - Returns: The Field instance.
+
+   ```javascript
+   import { Field, Model } from "json-modelizer";
+
+   class User extends Model {
+     static _table = "users";
+     static schema = {
+       age: Field.Number().Default(18),
+     };
+   }
+   ```
 
 ### Relationships
 
@@ -263,9 +418,6 @@ class User extends Model {
   static schema = {
     name: Field.String().Required(),
     age: Field.Number(),
-    createdAt: Field.Date()
-      .Default(() => new Date())
-      .Required(),
   };
 }
 
@@ -349,9 +501,6 @@ class User extends Model {
   static schema = {
     name: Field.String().Required(),
     age: Field.Number(),
-    createdAt: Field.Date()
-      .Default(() => new Date())
-      .Required(),
   };
 }
 
@@ -379,9 +528,6 @@ class User extends Model {
   static schema = {
     name: Field.String().Required(),
     age: Field.Number(),
-    createdAt: Field.Date()
-      .Default(() => new Date())
-      .Required(),
   };
 }
 
@@ -409,9 +555,6 @@ class User extends Model {
   static schema = {
     name: Field.String().Required(),
     age: Field.Number(),
-    createdAt: Field.Date()
-      .Default(() => new Date())
-      .Required(),
   };
 }
 
