@@ -5,6 +5,7 @@
 - [Documentation](#documentation)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
+  - [Config File](#config-file)
   - [Usage](#usage)
     - [Model](#model)
       - [Model Definition](#model-definition)
@@ -27,6 +28,22 @@
 npm install json-modelizer
 ```
 
+## Config File
+
+Create a `json-modelizer.json` file in the root of your project with the following content:
+
+```json
+{
+  "dataPath": "./data",
+  "prettyfy": false,
+  "indent": 2
+};
+```
+
+The `dataPath` property is the path to the directory where your JSON data files will be stored. The default value is `./data`.\
+The `prettyfy` property is a boolean value that determines whether the JSON data files should be prettyfied or not. The default value is `false`.\
+The `indent` property is the number of spaces to use for indentation when prettyfying the JSON data files. The default value is `2`. Only applicable if `prettyfy` is set to `true`.
+
 ## Usage
 
 ### Model
@@ -41,8 +58,8 @@ import { Field, Model } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String().Required(),
-    age: Field.Number(),
+    name: Field.String(),
+    age: Field.Number().Nullable(),
   };
 }
 ```
@@ -270,8 +287,8 @@ import { Field, Model } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String().Required(),
-    age: Field.Number(),
+    name: Field.String(),
+    age: Field.Number().Nullable(),
   };
 }
 ```
@@ -289,7 +306,7 @@ The `Field` class provides the following methods to define attributes:
    class User extends Model {
      static _table = "users";
      static schema = {
-       age: Field.Number(),
+       age: Field.Number().Nullable(),
      };
    }
    ```
@@ -364,9 +381,9 @@ Each of the above methods returns a `Field` instance, which can be used to defin
 
 The field object is an instance of the `Field` class, which provides various methods to define the attribute.
 
-1. `Field#Required() => Field`:
+1. `Field#Nullabe() => Field`:
 
-   - Description: Define the attribute as required.
+   - Description: Define the attribute as nullable. By default all attributes are required unless the `Nullable` method is called.
    - Returns: The Field instance.
 
    ```javascript
@@ -375,7 +392,7 @@ The field object is an instance of the `Field` class, which provides various met
    class User extends Model {
      static _table = "users";
      static schema = {
-       name: Field.String().Required(),
+       name: Field.String().Nullable(),
      };
    }
    ```
@@ -416,16 +433,16 @@ import { Field, Model } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String().Required(),
-    age: Field.Number(),
+    name: Field.String(),
+    age: Field.Number().Nullable(),
   };
 }
 
 class Contact extends Model {
   static _table = "contacts";
   static schema = {
-    phone: Field.String().Required(),
-    email: Field.String().Required(),
+    phone: Field.String(),
+    email: Field.String(),
   };
 }
 
@@ -499,16 +516,16 @@ import { Model, Field } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String().Required(),
-    age: Field.Number(),
+    name: Field.String(),
+    age: Field.Number().Nullable(),
   };
 }
 
 class Contact extends Model {
   static _table = "contacts";
   static schema = {
-    phone: Field.String().Required(),
-    email: Field.String().Required(),
+    phone: Field.String(),
+    email: Field.String(),
   };
 }
 
@@ -526,16 +543,16 @@ import { Model, Field } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String().Required(),
-    age: Field.Number(),
+    name: Field.String(),
+    age: Field.Number().Nullable(),
   };
 }
 
 class Post extends Model {
   static _table = "posts";
   static schema = {
-    title: Field.String().Required(),
-    content: Field.String().Required(),
+    title: Field.String(),
+    content: Field.String(),
   };
 }
 
@@ -553,15 +570,15 @@ import { Model, Field } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String().Required(),
-    age: Field.Number(),
+    name: Field.String(),
+    age: Field.Number().Nullable(),
   };
 }
 
 class Role extends Model {
   static _table = "roles";
   static schema = {
-    name: Field.String().Required(),
+    name: Field.String(),
   };
 }
 

@@ -1,15 +1,15 @@
 export default class Field {
   #type;
-  #isRequired;
+  #isNullable;
   #default;
 
   constructor(type) {
     this.#type = type;
-    this.#isRequired = false;
+    this.#isNullable = false;
   }
 
-  Required() {
-    this.#isRequired = true;
+  Nullable() {
+    this.#isNullable = true;
 
     return this;
   }
@@ -26,7 +26,7 @@ export default class Field {
   }
 
   validateAndSanitize(value) {
-    const shouldCheckDefaultValue = this.#isRequired && value === undefined;
+    const shouldCheckDefaultValue = !this.#isNullable && value === undefined;
     if (shouldCheckDefaultValue) {
       const doesntHaveDefaultValue = this.#default === undefined;
       if (doesntHaveDefaultValue) throw new Error("This field is required");

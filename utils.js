@@ -6,6 +6,8 @@ import {
   writeFileSync,
 } from "fs";
 
+import DEFAULT_CONFIG from "./DEFAULT_CONFIG.js";
+
 function fileExists(path) {
   return existsSync(path) && lstatSync(path).isFile();
 }
@@ -15,26 +17,24 @@ function dirExists(path) {
 }
 
 function readConfig() {
-  if (!fileExists("./json-modelizer.json")) return {};
+  if (!fileExists("./json-modelizer.json")) return DEFAULT_CONFIG;
 
   const content = readFileSync("./json-modelizer.json", "utf-8");
   const config = JSON.parse(content);
-  return config;
+  return { ...DEFAULT_CONFIG, ...config };
 }
 
-function getDataPath() {
+function sanitizeDatapath(datapath) {
+  return datapath.endsWith("/") ? datapath : `${datapath}/`;
+}
+
+export function data(name, data, replacer = null, space) {
   const config = readConfig();
-  const dataPath = config.dataPath || "./data";
-
-  return dataPath.endsWith("/") ? dataPath : `${dataPath}/`;
-}
-
-export function data(name, data, replacer = null, space = 2) {
-  const { prettyfy } = readConfig();
-  const dataPath = getDataPath();
-  const filePath = `${dataPath}${name}.json`;
-  if (!dirExists(dataPath)) {
-    mkdirSync(dataPath);
+  const { prettyfy, indent } = config;
+  const datapath = sanitizeDatapath(config.datapath);
+  const filePath = `${datapath}${name}.json`;
+  if (!dirExists(datapath)) {
+    mkdirSync(datapath);
   }
   if (!fileExists(filePath)) {
     writeFileSync(filePath, "[]");
@@ -43,8 +43,8 @@ export function data(name, data, replacer = null, space = 2) {
 
   if (data) {
     const json = prettyfy
-      ? JSON.stringify(data, replacer, space)
-      : JSON.stringify(data);
+      ? JSON.stringify(data, replacer, space || indent)
+      : JSON.stringify(data, replacer);
     writeFileSync(filePath, json);
     return data;
   } else {

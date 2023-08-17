@@ -21,20 +21,6 @@ export default class Model {
       configurable: false,
     });
 
-    Object.defineProperty(this, "createdAt", {
-      value: new Date(obj.createdAt) || new Date(),
-      enumerable: true,
-      writable: false,
-      configurable: false,
-    });
-
-    Object.defineProperty(this, "updatedAt", {
-      value: new Date(obj.updatedAt) || new Date(),
-      enumerable: true,
-      writable: false,
-      configurable: false,
-    });
-
     for (const [key, field] of Object.entries(this.constructor.sanitize(obj))) {
       this[key] = field;
     }
@@ -49,6 +35,20 @@ export default class Model {
         enumerable: true,
       });
     }
+
+    Object.defineProperty(this, "createdAt", {
+      value: new Date(obj.createdAt) || new Date(),
+      enumerable: true,
+      writable: false,
+      configurable: false,
+    });
+
+    Object.defineProperty(this, "updatedAt", {
+      value: new Date(obj.updatedAt) || new Date(),
+      enumerable: true,
+      writable: false,
+      configurable: false,
+    });
   }
 
   delete() {
