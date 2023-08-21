@@ -58,8 +58,8 @@ import { Field, Model } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String(),
-    age: Field.Number().Nullable(),
+    name: Field.String,
+    age: Field.Number.Nullable,
   };
 }
 ```
@@ -287,15 +287,15 @@ import { Field, Model } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String(),
-    age: Field.Number().Nullable(),
+    name: Field.String,
+    age: Field.Number.Nullable,
   };
 }
 ```
 
 The `Field` class provides the following methods to define attributes:
 
-1. `Field.Number() => Field`:
+1. `Field.Number => Field`:
 
    - Description: Define a number attribute.
    - Returns: A Field instance representing the number attribute.
@@ -306,12 +306,12 @@ The `Field` class provides the following methods to define attributes:
    class User extends Model {
      static _table = "users";
      static schema = {
-       age: Field.Number().Nullable(),
+       age: Field.Number.Nullable,
      };
    }
    ```
 
-2. `Field.String() => Field`:
+2. `Field.String => Field`:
 
    - Description: Define a string attribute.
    - Returns: A Field instance representing the string attribute.
@@ -322,12 +322,12 @@ The `Field` class provides the following methods to define attributes:
    class User extends Model {
      static _table = "users";
      static schema = {
-       name: Field.String(),
+       name: Field.String,
      };
    }
    ```
 
-3. `Field.Text() => Field`:
+3. `Field.Text => Field`:
 
    - Description: Define a text attribute.
    - Returns: A Field instance representing the text attribute.
@@ -338,12 +338,12 @@ The `Field` class provides the following methods to define attributes:
    class User extends Model {
      static _table = "users";
      static schema = {
-       bio: Field.Text(),
+       bio: Field.Text,
      };
    }
    ```
 
-4. `Field.Boolean() => Field`:
+4. `Field.Boolean => Field`:
 
    - Description: Define a boolean attribute.
    - Returns: A Field instance representing the boolean attribute.
@@ -354,12 +354,12 @@ The `Field` class provides the following methods to define attributes:
    class User extends Model {
      static _table = "users";
      static schema = {
-       isVerified: Field.Boolean(),
+       isVerified: Field.Boolean,
      };
    }
    ```
 
-5. `Field.Date() => Field`:
+5. `Field.Date => Field`:
 
    - Description: Define a date attribute.
    - Returns: A Field instance representing the date attribute.
@@ -370,7 +370,7 @@ The `Field` class provides the following methods to define attributes:
    class User extends Model {
      static _table = "users";
      static schema = {
-       birthday: Field.Date(),
+       birthday: Field.Date,
      };
    }
    ```
@@ -381,7 +381,7 @@ Each of the above methods returns a `Field` instance, which can be used to defin
 
 The field object is an instance of the `Field` class, which provides various methods to define the attribute.
 
-1. `Field#Nullabe() => Field`:
+1. `Field#Nullable => Field`:
 
    - Description: Define the attribute as nullable. By default all attributes are required unless the `Nullable` method is called.
    - Returns: The Field instance.
@@ -392,7 +392,7 @@ The field object is an instance of the `Field` class, which provides various met
    class User extends Model {
      static _table = "users";
      static schema = {
-       name: Field.String().Nullable(),
+       name: Field.String.Nullable,
      };
    }
    ```
@@ -410,7 +410,7 @@ The field object is an instance of the `Field` class, which provides various met
    class User extends Model {
      static _table = "users";
      static schema = {
-       age: Field.Number().Default(18),
+       age: Field.Number.Default(18),
      };
    }
    ```
@@ -433,16 +433,16 @@ import { Field, Model } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String(),
-    age: Field.Number().Nullable(),
+    name: Field.String,
+    age: Field.Number.Nullable,
   };
 }
 
 class Contact extends Model {
   static _table = "contacts";
   static schema = {
-    phone: Field.String(),
-    email: Field.String(),
+    phone: Field.String,
+    email: Field.String,
   };
 }
 
@@ -516,16 +516,16 @@ import { Model, Field } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String(),
-    age: Field.Number().Nullable(),
+    name: Field.String,
+    age: Field.Number.Nullable,
   };
 }
 
 class Contact extends Model {
   static _table = "contacts";
   static schema = {
-    phone: Field.String(),
-    email: Field.String(),
+    phone: Field.String,
+    email: Field.String,
   };
 }
 
@@ -543,16 +543,16 @@ import { Model, Field } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String(),
-    age: Field.Number().Nullable(),
+    name: Field.String,
+    age: Field.Number.Nullable,
   };
 }
 
 class Post extends Model {
   static _table = "posts";
   static schema = {
-    title: Field.String(),
-    content: Field.String(),
+    title: Field.String,
+    content: Field.String,
   };
 }
 
@@ -570,15 +570,15 @@ import { Model, Field } from "json-modelizer";
 class User extends Model {
   static _table = "users";
   static schema = {
-    name: Field.String(),
-    age: Field.Number().Nullable(),
+    name: Field.String,
+    age: Field.Number.Nullable,
   };
 }
 
 class Role extends Model {
   static _table = "roles";
   static schema = {
-    name: Field.String(),
+    name: Field.String,
   };
 }
 

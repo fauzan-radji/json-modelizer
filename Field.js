@@ -8,7 +8,7 @@ export default class Field {
     this.#isNullable = false;
   }
 
-  Nullable() {
+  get Nullable() {
     this.#isNullable = true;
 
     return this;
@@ -66,23 +66,23 @@ export default class Field {
     }
   }
 
-  static Number() {
+  static get Number() {
     return new Field(Field.#NUMBER);
   }
 
-  static String() {
+  static get String() {
     return new Field(Field.#STRING);
   }
 
-  static Text() {
+  static get Text() {
     return new Field(Field.#TEXT);
   }
 
-  static Boolean() {
+  static get Boolean() {
     return new Field(Field.#BOOLEAN);
   }
 
-  static Date() {
+  static get Date() {
     return new Field(Field.#DATE);
   }
 

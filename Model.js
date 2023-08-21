@@ -75,6 +75,10 @@ export default class Model {
     return this.#table;
   }
 
+  get JSON() {
+    return JSON.stringify(this);
+  }
+
   static get table() {
     return this._table;
   }
@@ -242,7 +246,7 @@ export default class Model {
     for (const [key, field] of Object.entries(this.schema)) {
       try {
         const validated = field.validateAndSanitize(obj[key]);
-        if (!validated) continue;
+        if (validated === undefined) continue;
         newObj[key] = validated;
       } catch (e) {
         throw new Error(`${key}: ${e.message}`);
