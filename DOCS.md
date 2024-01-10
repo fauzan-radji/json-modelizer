@@ -40,9 +40,9 @@ Create a `json-modelizer.json` file in the root of your project with the followi
 };
 ```
 
-The `dataPath` property is the path to the directory where your JSON data files will be stored. The default value is `./data`.\
-The `prettyfy` property is a boolean value that determines whether the JSON data files should be prettyfied or not. The default value is `false`.\
-The `indent` property is the number of spaces to use for indentation when prettyfying the JSON data files. The default value is `2`. Only applicable if `prettyfy` is set to `true`.
+- **dataPath**: is the path to the directory where your JSON data files will be stored. The default value is `./data`.
+- **prettyfy**: is a boolean value that determines whether the JSON data files should be prettyfied or not. The default value is `false`.
+- **indent**: is the number of spaces to use for indentation when prettyfying the JSON data files. The default value is `2`. Only applicable if `prettyfy` is set to `true`.
 
 ## Usage
 
@@ -90,7 +90,29 @@ class User extends Model {
    console.log(users); // [{ name: "John Doe", email: "john@doe"}]
    ```
 
-3. `Model.find(id) => Model`:
+3. `Model.paginate(page, limit) => Model[]`:
+
+   - Description: Paginate all records of the model.
+   - Parameters:
+     - `page` (number): the page number
+     - `limit` (number): how much data per page
+   - Returns: An array of Model instances where `0 <= length <= limit`
+
+   ```javascript
+   const page = 2;
+   const limit = 5;
+   const users = User.paginate(page, limit);
+   console.log(users);
+   /*
+   [
+    { name: "John Doe", email: "john@doe"},
+    ...,
+    {name: "Jane Doe", email: "jane@doe"},
+   ]
+   */
+   ```
+
+4. `Model.find(id) => Model`:
 
    - Description: Find a record of the model by its ID from the JSON data.
    - Parameters:
@@ -104,7 +126,7 @@ class User extends Model {
    console.log(user.id); // 1
    ```
 
-4. `Model.findBy(key, value) => Model`:
+5. `Model.findBy(key, value) => Model`:
 
    - Description: Find the first record of the model that matches the given key-value pair from the JSON data.
    - Parameters:
@@ -119,7 +141,7 @@ class User extends Model {
    console.log(user.id); // 1
    ```
 
-5. `Model.where(key, value) => Model[]`:
+6. `Model.where(key, value) => Model[]`:
 
    - Description: Find all records of the model that match the given key-value pair from the JSON data.
    - Parameters:
@@ -132,7 +154,7 @@ class User extends Model {
    console.log(users); // [{ name: "John Doe", email: "john@doe"}]
    ```
 
-6. `Model.delete(id) => Model`:
+7. `Model.delete(id) => Model`:
 
    - Description: Delete a record of the model by its ID from the JSON data.
    - Parameters:
@@ -146,7 +168,7 @@ class User extends Model {
    console.log(deletedUser.id); // 1
    ```
 
-7. `Model.update(id, obj) => Model`:
+8. `Model.update(id, obj) => Model`:
 
    - Description: Update a record of the model by its ID with the provided data in the JSON data.
    - Parameters:
@@ -161,7 +183,7 @@ class User extends Model {
    console.log(updatedUser.id); // 1
    ```
 
-8. `Model.first() => Model`:
+9. `Model.first() => Model`:
 
    - Description: Retrieve the first record of the model from the JSON data.
    - Returns: A Model instance representing the first record, or `null` if no records exist.
@@ -173,19 +195,19 @@ class User extends Model {
    console.log(firstUser.id); // 1
    ```
 
-9. `Model.last() => Model`:
+10. `Model.last() => Model`:
 
-   - Description: Retrieve the last record of the model from the JSON data.
-   - Returns: A Model instance representing the last record, or `null` if no records exist.
+    - Description: Retrieve the last record of the model from the JSON data.
+    - Returns: A Model instance representing the last record, or `null` if no records exist.
 
-   ```javascript
-   const lastUser = User.last();
-   console.log(lastUser.name); // John Doe
-   console.log(lastUser.email); // john@doe
-   console.log(lastUser.id); // 1
-   ```
+    ```javascript
+    const lastUser = User.last();
+    console.log(lastUser.name); // John Doe
+    console.log(lastUser.email); // john@doe
+    console.log(lastUser.id); // 1
+    ```
 
-10. `Model.filter(callback) => Model[]`:
+11. `Model.filter(callback) => Model[]`:
 
     - Description: Filter records of the model based on a provided callback function from the JSON data.
     - Parameters:
@@ -197,7 +219,7 @@ class User extends Model {
     console.log(users); // [{ name: "John Doe", email: "john@doe"}]
     ```
 
-11. `Model.clear() => Model[]`:
+12. `Model.clear() => Model[]`:
 
     - Description: Delete all records of the model from the JSON data.
     - Returns: An array of Model instances representing the deleted records.

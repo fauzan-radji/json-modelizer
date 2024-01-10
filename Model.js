@@ -106,6 +106,19 @@ export default class Model {
   }
 
   /**
+   * Paginate Models using given page and limit params
+   * @param {Number} page
+   * @param {Number} limit
+   * @returns {Model[]}
+   */
+  static paginate(page, limit) {
+    if (limit < 1) throw new Error("The limit variable should be more than 0");
+    const start = (page - 1) * limit;
+    const end = page * limit;
+    return this.all().slice(start, end);
+  }
+
+  /**
    * Create new Model and save it to the table
    * @param {Object} obj
    * @returns {Model}
@@ -268,7 +281,6 @@ export default class Model {
     return relation;
   }
 
-  // hasMany
   /**
    * @param {Model} model
    * @returns {void}
