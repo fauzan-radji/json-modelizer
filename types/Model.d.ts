@@ -7,8 +7,6 @@ export default class Model {
 
   #table: string;
 
-  constructor(obj: { id: number; createdAt?: string; updatedAt?: string });
-
   delete(): Model | null;
 
   update(obj: { [key: string]: any }): Model;
@@ -21,33 +19,33 @@ export default class Model {
 
   static get table(): string;
 
-  static _save(models: Model[]): void;
+  static _save<M extends Model>(this: new () => M, models: M[]): void;
 
   static count(): number;
 
-  static all(): Model[];
+  static all<M extends Model>(this: new () => M): M[];
 
-  static paginate(page: number, limit: number, filterFunction: (model: Model) => boolean): Model[];
+  static paginate<M extends Model>(this: new () => M, page: number, limit: number, filterFunction: (model: M) => boolean): M[];
 
-  static create(obj: { [key: string]: any }): Model;
+  static create<M extends Model>(this: new () => M, obj: M): M;
 
-  static findBy(key: string, value: any): Model | null;
+  static findBy<M extends Model>(this: new () => M, key: string, value: any): M | null;
 
-  static find(id: number): Model | null;
+  static find<M extends Model>(this: new () => M, id: number): M | null;
 
-  static where(key: string, value: any): Model[];
+  static where<M extends Model>(this: new () => M, key: string, value: any): M[];
 
-  static delete(id: number): Model | null;
+  static delete<M extends Model>(this: new () => M, id: number): M | null;
 
-  static update(id: number, obj: { [key: string]: any }): Model | null;
+  static update<M extends Model, O extends Partial<M>>(this: new () => M, id: number, obj: O): M | null;
 
-  static last(): Model | null;
+  static last<M extends Model>(this: new () => M): M | null;
 
-  static first(): Model | null;
+  static first<M extends Model>(this: new () => M): M | null;
 
-  static filter(callback: (model: Model) => boolean): Model[];
+  static filter<M extends Model>(this: new () => M, callback: (model: M) => boolean): M[];
 
-  static clear(): Model[];
+  static clear<M extends Model>(this: new () => M): M[];
 
   static sanitize(obj: { [key: string]: any }): { [key: string]: any };
 
