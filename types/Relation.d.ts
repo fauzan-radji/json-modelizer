@@ -1,3 +1,5 @@
+import type Model from "./Model";
+
 export default class Relation {
   #name: string;
 

@@ -1,4 +1,4 @@
-import Relation from "./Relation.js";
+import type Relation from "./Relation";
 
 export default class Model {
   static _table: string;
@@ -27,7 +27,7 @@ export default class Model {
 
   static paginate<M extends Model>(this: new () => M, page: number, limit: number, filterFunction: (model: M) => boolean): M[];
 
-  static create<M extends Model>(this: new () => M, obj: M): M;
+  static create<M extends Model, O extends Partial<M>>(this: new () => M, obj: O): M;
 
   static findBy<M extends Model>(this: new () => M, key: string, value: any): M | null;
 
