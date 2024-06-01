@@ -27,7 +27,7 @@ export default class Model {
 
   static all(): Model[];
 
-  static paginate(page: number, limit: number): Model[];
+  static paginate(page: number, limit: number, filterFunction: (model: Model) => boolean): Model[];
 
   static create(obj: { [key: string]: any }): Model;
 

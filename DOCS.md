@@ -94,12 +94,15 @@ class User extends Model {
    - Parameters:
      - `page` (number): the page number
      - `limit` (number): how much data per page
+     - `filterFunction` (Function): a function that takes a Model instance as an argument and returns `true` to include the record in the result or `false` to exclude it.
    - Returns: An array of Model instances where `0 <= length <= limit`
 
    ```javascript
    const page = 2;
    const limit = 5;
-   const users = User.paginate(page, limit);
+   const users = User.paginate(page, limit, (user) =>
+     user.name.includes("Doe")
+   );
    console.log(users);
    /*
    [

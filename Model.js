@@ -111,11 +111,11 @@ export default class Model {
    * @param {Number} limit
    * @returns {Model[]}
    */
-  static paginate(page, limit) {
+  static paginate(page, limit, filterFunction = () => true) {
     if (limit < 1) throw new Error("The limit variable should be more than 0");
     const start = (page - 1) * limit;
     const end = page * limit;
-    return this.all().slice(start, end);
+    return this.filter(filterFunction).slice(start, end);
   }
 
   /**
@@ -237,7 +237,7 @@ export default class Model {
   /**
    * Retrieve the number of Models in the table that match the callback
    * @param {Function} callback
-   * @returns {number}
+   * @returns {Model[]}
    */
   static filter(callback) {
     const models = this.all();
