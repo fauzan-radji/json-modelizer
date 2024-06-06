@@ -62,9 +62,13 @@ export default class Model {
 
   #refresh() {
     const model = this.constructor.find(this.id);
+    const relationNames = this.constructor._relations.map(
+      (relation) => relation.name
+    );
     if (model)
       for (const [key, value] of Object.entries(model)) {
-        if (["id", "createdAt", "updatedAt"].includes(key)) continue;
+        if (["id", "createdAt", "updatedAt", ...relationNames].includes(key))
+          continue;
         this[key] = value;
       }
 

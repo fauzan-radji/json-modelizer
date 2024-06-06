@@ -9,7 +9,7 @@ export default class Model {
 
   delete(): Model | null;
 
-  update(obj: { [key: string]: any }): Model;
+  update<M extends Model, O extends Partial<M>>(this: M, obj: O): M;
 
   #refresh(): Model;
 
