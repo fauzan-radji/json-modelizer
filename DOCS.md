@@ -37,7 +37,7 @@ JSON_MODELIZER_INDENT=2
 ```
 
 - **DATAPATH**: is the path to the directory where your JSON data files will be stored. The default value is `./data`.
-- **PRETTIFY**: is a boolean value that determines whether the JSON data files should be prettyfied or not. The default value is `false`.
+- **PRETTYFY**: is a boolean value that determines whether the JSON data files should be prettyfied or not. The default value is `false`.
 - **INDENT**: is the number of spaces to use for indentation when prettyfying the JSON data files. The default value is `2`. Only applicable if `prettyfy` is set to `true`.
 
 ## Usage

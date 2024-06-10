@@ -24,7 +24,7 @@ function readConfig() {
     ? process.env.JSON_MODELIZER_PRETTYFY === "true"
     : DEFAULT_CONFIG.prettyfy;
   const indent = process.env.JSON_MODELIZER_INDENT
-    ? process.env.JSON_MODELIZER_INDENT
+    ? +process.env.JSON_MODELIZER_INDENT
     : DEFAULT_CONFIG.indent;
 
   return { datapath, prettyfy, indent };
