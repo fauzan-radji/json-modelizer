@@ -17,11 +17,17 @@ function dirExists(path) {
 }
 
 function readConfig() {
-  if (!fileExists("./json-modelizer.json")) return DEFAULT_CONFIG;
+  const datapath = process.env.JSON_MODELIZER_DATAPATH
+    ? process.env.JSON_MODELIZER_DATAPATH
+    : DEFAULT_CONFIG.datapath;
+  const prettyfy = process.env.JSON_MODELIZER_PRETTYFY
+    ? process.env.JSON_MODELIZER_PRETTYFY === "true"
+    : DEFAULT_CONFIG.prettyfy;
+  const indent = process.env.JSON_MODELIZER_INDENT
+    ? process.env.JSON_MODELIZER_INDENT
+    : DEFAULT_CONFIG.indent;
 
-  const content = readFileSync("./json-modelizer.json", "utf-8");
-  const config = JSON.parse(content);
-  return { ...DEFAULT_CONFIG, ...config };
+  return { datapath, prettyfy, indent };
 }
 
 function sanitizeDatapath(datapath) {

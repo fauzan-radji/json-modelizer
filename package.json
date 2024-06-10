@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/fauzan-radji/json-modelizer/issues"
   },
-  "homepage": "https://github.com/fauzan-radji/json-modelizer#readme"
+  "homepage": "https://github.com/fauzan-radji/json-modelizer#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
 }

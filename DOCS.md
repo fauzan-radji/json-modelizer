@@ -3,7 +3,7 @@
 ## Table of Contents
 
 - [Installation](#installation)
-- [Config File](#config-file)
+- [Configuration](#configuration)
 - [Usage](#usage)
   - [Model](#model)
     - [Model Definition](#model-definition)
@@ -26,21 +26,19 @@
 npm install json-modelizer
 ```
 
-## Config File
+## Configuration
 
-Create a `json-modelizer.json` file in the root of your project with the following content:
+Add these variables to your `.env` file:
 
-```json
-{
-  "dataPath": "./data",
-  "prettyfy": false,
-  "indent": 2
-};
+```env
+JSON_MODELIZER_DATAPATH=./data
+JSON_MODELIZER_PRETTYFY=false
+JSON_MODELIZER_INDENT=2
 ```
 
-- **dataPath**: is the path to the directory where your JSON data files will be stored. The default value is `./data`.
-- **prettyfy**: is a boolean value that determines whether the JSON data files should be prettyfied or not. The default value is `false`.
-- **indent**: is the number of spaces to use for indentation when prettyfying the JSON data files. The default value is `2`. Only applicable if `prettyfy` is set to `true`.
+- **DATAPATH**: is the path to the directory where your JSON data files will be stored. The default value is `./data`.
+- **PRETTIFY**: is a boolean value that determines whether the JSON data files should be prettyfied or not. The default value is `false`.
+- **INDENT**: is the number of spaces to use for indentation when prettyfying the JSON data files. The default value is `2`. Only applicable if `prettyfy` is set to `true`.
 
 ## Usage
 
