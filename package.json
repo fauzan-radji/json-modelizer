@@ -1,6 +1,6 @@
 {
   "name": "json-modelizer",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Lightweight and intuitive Object-Relational Mapping (ORM) package designed to work with JSON files as a data storage solution.",
   "main": "index.js",
   "type": "module",
